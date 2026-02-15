@@ -1,19 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import React from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Search } from 'lucide-react';
 import guidesRegistry, { categories } from '../data/guides';
+import GuideCard from '../components/GuideCard';
+import Button from '../components/ui/Button';
 
 const GuideIndex = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const categoryParam = searchParams.get('category') || 'All';
-  const queryParam = searchParams.get('search') || '';
-
-  const [activeCategory, setActiveCategory] = useState(categoryParam);
-  const [searchQuery, setSearchQuery] = useState(queryParam);
-
-  useEffect(() => {
-    setActiveCategory(categoryParam);
-    setSearchQuery(queryParam);
-  }, [categoryParam, queryParam]);
+  const activeCategory = searchParams.get('category') || 'All';
+  const searchQuery = searchParams.get('search') || '';
 
   const filteredGuides = guidesRegistry.filter(guide => {
     const matchesCategory = activeCategory === 'All' || guide.category === activeCategory;
@@ -43,60 +38,68 @@ const GuideIndex = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-12">
-      <div className="mb-12">
-        <h1 className="text-2xl font-bold text-heading mb-2 uppercase tracking-tight">Library</h1>
-        <p className="text-secondary text-sm">Browse all available progression guides.</p>
+    <div className="container py-5">
+      <div className="mb-5">
+        <h1 className="display-4 fw-black mb-2 tracking-tighter text-white">THE LIBRARY</h1>
+        <p className="lead text-light-muted fw-medium">Browse all available progression guides.</p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 mb-12">
-        <input 
-          type="text"
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={(e) => updateSearch(e.target.value)}
-          className="flex-1 bg-transparent border border-card-border rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-card-hover-border transition-colors"
-        />
-        <div className="flex flex-wrap gap-2">
-          <button 
+      <div className="row g-4 mb-5">
+        <div className="col-lg-6">
+          <div className="position-relative">
+            <Search className="position-absolute start-0 top-50 translate-middle-y ms-3 text-muted" size={20} />
+            <input 
+              type="text"
+              placeholder="Search guides..."
+              value={searchQuery}
+              onChange={(e) => updateSearch(e.target.value)}
+              className="form-control bg-deep border-secondary text-black ps-5 py-3 rounded-3 shadow-none focus-ring focus-ring-primary"
+              style={{ borderColor: '#333' }}
+            />
+          </div>
+        </div>
+        <div className="col-lg-6 d-flex flex-wrap align-items-center gap-2">
+          <Button 
             onClick={() => updateCategory('All')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors ${activeCategory === 'All' ? 'bg-heading text-surface' : 'border border-card-border text-secondary hover:text-heading'}`}
+            variant={activeCategory === 'All' ? 'primary' : 'outline'}
+            size="sm"
+            className={activeCategory !== 'All' ? 'text-muted border-secondary' : ''}
           >
             All
-          </button>
+          </Button>
           {categories.map((cat) => (
-            <button 
+            <Button 
               key={cat} 
               onClick={() => updateCategory(cat)}
-              className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors ${activeCategory === cat ? 'bg-heading text-surface' : 'border border-card-border text-secondary hover:text-heading'}`}
+              variant={activeCategory === cat ? 'primary' : 'outline'}
+              size="sm"
+              className={activeCategory !== cat ? 'text-muted border-secondary' : ''}
             >
               {cat}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {filteredGuides.map((guide) => (
-          <Link key={guide.id} to={`/guides/${guide.id}`} className="card p-6 group">
-            <p className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-2">{guide.category}</p>
-            <h3 className="text-lg font-bold text-heading group-hover:underline transition-all mb-2">
-              {guide.title}
-            </h3>
-            <p className="text-secondary text-sm line-clamp-2 mb-4">
-              {guide.description}
-            </p>
-            <div className="flex items-center justify-between text-[10px] font-medium uppercase text-muted">
-              <span>By {guide.author}</span>
-              <span>{guide.date}</span>
-            </div>
-          </Link>
+      <div className="row g-4">
+        {filteredGuides.map((guide, index) => (
+          <div className="col-md-6 col-lg-4" key={guide.id}>
+            <GuideCard guide={guide} delay={index * 0.1} />
+          </div>
         ))}
       </div>
       
       {filteredGuides.length === 0 && (
-        <div className="py-20 text-center">
-          <p className="text-secondary text-sm">No results found.</p>
+        <div className="py-5 text-center bg-surface rounded-5 border border-secondary border-dashed mt-5">
+          <p className="h4 text-muted fw-bold">No guides found matching your search.</p>
+          <Button 
+            onClick={() => {updateSearch(''); updateCategory('All')}} 
+            variant="ghost" 
+            size="sm"
+            className="mt-2 text-primary"
+          >
+            RESET FILTERS
+          </Button>
         </div>
       )}
     </div>

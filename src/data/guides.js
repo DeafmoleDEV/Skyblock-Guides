@@ -14,7 +14,6 @@ const guidesRegistry = [
     date: 'Jan 26, 2026',
     category: 'Dungeons',
     contentPath: 'data/markdown/f7-gear-guide.md', // We'll fetch this
-    image: 'bg-gradient-to-br from-necron/40 to-slate-900',
     tags: ['F7', 'Archer', 'Berserker']
   },
   {
@@ -25,7 +24,6 @@ const guidesRegistry = [
     date: 'Feb 01, 2026',
     category: 'Slayers',
     contentPath: null, // Placeholder
-    image: 'bg-gradient-to-br from-purple-600/40 to-slate-900',
     tags: ['Slayers', 'Zombie']
   },
   {
@@ -36,7 +34,6 @@ const guidesRegistry = [
     date: 'Jan 15, 2026',
     category: 'Mining',
     contentPath: null, // Placeholder
-    image: 'bg-gradient-to-br from-diamond/40 to-slate-900',
     tags: ['Mining', 'HOTM']
   }
 ];

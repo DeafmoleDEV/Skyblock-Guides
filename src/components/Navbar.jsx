@@ -1,29 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sun, Moon } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { Flame } from 'lucide-react';
 
 const Navbar = () => {
-  const { theme, toggleTheme } = useTheme();
-
   return (
-    <nav className="h-16 flex items-center px-6">
-      <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
-        <Link to="/" className="text-heading font-bold tracking-tighter uppercase text-sm">
-          Skyblock Guides
+    <nav className="navbar navbar-expand-lg navbar-dark navbar-custom px-4 sticky-top">
+      <div className="container d-flex justify-content-between">
+        <Link to="/" className="navbar-brand d-flex align-items-center gap-2">
+          <Flame className="text-primary" fill="currentColor" size={24} />
+          <span className="h5 mb-0 fw-bold text-uppercase tracking-wider">
+            Skyblock<span className="text-primary">Guides</span>
+          </span>
         </Link>
         
-        <div className="flex items-center space-x-6">
-          <Link to="/guides" className="nav-link">
-            Library
+        <div className="d-flex align-items-center gap-4">
+          <Link to="/guides" className="nav-link text-uppercase fw-bold text-white-50 hover-white small tracking-widest">
+            Guides
           </Link>
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-heading/5 transition-colors text-secondary hover:text-heading"
-            aria-label="Toggle theme"
-          >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
+          <a href="https://discord.gg/5humW7QHkK" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+            Discord
+          </a>
         </div>
       </div>
     </nav>
