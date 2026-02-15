@@ -8,9 +8,10 @@ const CategoryCard = ({ title, description, icon, onClick, delay = 0 }) => {
       hoverable
       isAnimated
       className="p-4"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: delay, duration: 0.3 }}
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: delay, duration: 0.4, ease: "easeOut" }}
+      viewport={{ once: true }}
     >
       <div className="mb-4 text-primary opacity-75">{icon}</div>
       <h3 className="h5 fw-bold text-uppercase text-white mb-3 tracking-wide">{title}</h3>

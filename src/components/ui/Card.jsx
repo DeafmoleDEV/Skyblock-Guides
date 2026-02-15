@@ -31,7 +31,8 @@ const Card = ({
       whileHover={hoverable ? { y: -2, borderColor: '#55ff55' } : {}}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      viewport={{ once: true }}
       {...props}
     >
       {children}
