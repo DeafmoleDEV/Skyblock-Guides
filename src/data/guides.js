@@ -16,7 +16,7 @@ const guidesRegistry = [
     author: 'lotrszefOP',
     date: 'Jan 26, 2026',
     category: 'Dungeons',
-    contentPath: '/data/markdown/f7-gear-guide.md', // We'll fetch this
+    contentPath: 'data/markdown/f7-gear-guide.md', // We'll fetch this
     image: 'bg-gradient-to-br from-necron/40 to-slate-900',
     tags: ['F7', 'Archer', 'Berserker']
   },
