@@ -11,8 +11,9 @@ const Hero = ({ onSearch, searchQuery, setSearchQuery, onTagClick }) => {
         <div className="col-lg-7 text-center text-lg-start">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            viewport={{ once: true }}
           >
             <span className="badge-custom mb-3">Expert Knowledge</span>
             <h1 className="display-2 mb-4">
@@ -43,8 +44,9 @@ const Hero = ({ onSearch, searchQuery, setSearchQuery, onTagClick }) => {
           <motion.div 
             className="card-custom"
             initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5, ease: "easeOut" }}
+            viewport={{ once: true }}
           >
             <form onSubmit={onSearch}>
               <h3 className="h5 mb-4 text-uppercase tracking-wide">Find a guide</h3>
