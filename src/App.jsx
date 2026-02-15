@@ -29,7 +29,6 @@ function App() {
               <div className="d-flex gap-4 text-uppercase fw-bold" style={{ fontSize: '10px', letterSpacing: '0.2em' }}>
                 <a href="https://discord.gg/5humW7QHkK" target="_blank" rel="noopener noreferrer" className="text-decoration-none text-muted hover-primary transition-all">Discord</a>
                 <Link to="/guides" className="text-decoration-none text-muted hover-primary transition-all">Library</Link>
-                <a href="#" className="text-decoration-none text-muted hover-primary transition-all">Twitter</a>
               </div>
             </div>
           </div>
