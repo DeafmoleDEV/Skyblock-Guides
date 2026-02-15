@@ -74,7 +74,12 @@ const GuideDetail = () => {
               prose-blockquote:border-l border-white/20 prose-blockquote:italic prose-blockquote:text-slate-400
               prose-li:text-slate-300
             ">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown 
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  a: ({ node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" />
+                }}
+              >
                 {content}
               </ReactMarkdown>
             </div>
