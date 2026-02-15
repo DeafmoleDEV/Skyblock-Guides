@@ -8,5 +8,5 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  base: '/Skyblock-Guides/',
+  base: process.env.NETLIFY ? '/' : '/Skyblock-Guides/',
 })
