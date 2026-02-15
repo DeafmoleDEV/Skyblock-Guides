@@ -3,26 +3,93 @@
 @plugin "tailwindcss-animate";
 
 @theme {
-  --color-necron: #dc2626;
+  --color-necron: var(--necron);
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  /* Semantic colors */
+  --color-primary: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-muted: var(--text-muted);
+  --color-heading: var(--text-heading);
+  --color-surface: var(--bg-color);
+  
+  --color-card: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-card-hover: var(--card-hover-bg);
+  --color-card-hover-border: var(--card-hover-border);
+  --color-card-shadow: var(--card-shadow);
+  
+  --color-nav-hover: var(--nav-hover);
+}
+
+:root {
+  --bg-color: #000000;
+  --text-primary: #cbd5e1; /* slate-300 */
+  --text-secondary: #94a3b8; /* slate-400 */
+  --text-muted: #64748b; /* slate-500 */
+  --text-heading: #ffffff;
+  --card-bg: #121212;
+  --card-border: rgba(255, 255, 255, 0.05);
+  --card-hover-bg: #232323;
+  --card-hover-border: rgba(255, 255, 255, 0.2);
+  --card-shadow: 0 0 0 0 transparent;
+  --necron: #dc2626;
+  --nav-hover: #ffffff;
+  --selection-bg: rgba(255, 255, 255, 0.1);
+  --selection-text: #ffffff;
+}
+
+:root.light {
+  --bg-color: #e2e8f0; /* slate-200 */
+  --text-primary: #334155; /* slate-700 */
+  --text-secondary: #475569; /* slate-600 */
+  --text-muted: #64748b; /* slate-500 */
+  --text-heading: #0f172a; /* slate-900 */
+  --card-bg: #ffffff;
+  --card-border: rgba(0, 0, 0, 0.15);
+  --card-hover-bg: #ffffff;
+  --card-hover-border: rgba(0, 0, 0, 0.25);
+  --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --necron: #b91c1c;
+  --nav-hover: #000000;
+  --selection-bg: rgba(0, 0, 0, 0.05);
+  --selection-text: #000000;
 }
 
 @layer base {
   body {
-    @apply bg-black text-slate-300 antialiased selection:bg-white/10 selection:text-white;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    @apply antialiased transition-colors duration-300;
+  }
+  
+  ::selection {
+    background-color: var(--selection-bg);
+    color: var(--selection-text);
   }
 }
 
 @layer components {
   .nav-link {
-    @apply text-sm font-medium hover:text-white transition-colors duration-200;
+    @apply text-sm font-medium transition-colors duration-200;
+    color: var(--text-secondary);
+  }
+  
+  .nav-link:hover {
+    color: var(--nav-hover);
   }
 
   .card {
-    @apply bg-[#121212] border border-white/5 rounded-lg transition-colors duration-200;
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    @apply rounded-lg transition-all duration-200;
   }
 
   .card:hover {
-    @apply border-white/20 bg-[#161616];
+    border-color: var(--card-hover-border);
+    background-color: var(--card-hover-bg);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
   }
 }
