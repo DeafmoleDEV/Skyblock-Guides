@@ -10,13 +10,16 @@ const Card = ({
   isAnimated = true,
   ...props
 }) => {
+  const isFirefox = typeof window !== 'undefined' && navigator.userAgent.toLowerCase().includes('firefox');
+  const shouldAnimate = isAnimated && !isFirefox;
+
   const cardClasses = classNames(
     'card-custom position-relative h-100 overflow-hidden',
     { 'cursor-pointer': !!onClick },
     className
   );
 
-  if (!isAnimated) {
+  if (!shouldAnimate) {
     return (
       <div className={cardClasses} onClick={onClick} {...props}>
         {children}

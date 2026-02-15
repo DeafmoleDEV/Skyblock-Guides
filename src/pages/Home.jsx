@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Zap, Target, Pickaxe } from 'lucide-react';
 import Hero from '../components/Hero';
 import CategoryCard from '../components/CategoryCard';
+import AdPlacement from '../components/AdPlacement';
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,7 +30,9 @@ const Home = () => {
         onTagClick={handleTagClick}
       />
 
-      <div className="row g-4 mt-5">
+      <AdPlacement id={109} />
+
+      <div className="row g-4 mt-2">
         <div className="col-md-4">
           <CategoryCard 
             title="Dungeons" 
