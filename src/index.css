@@ -1,0 +1,53 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "tailwindcss-animate";
+
+@theme {
+  --color-gold: #FFD700;
+  --color-diamond: #B9F2FF;
+  --color-necron: #dc2626;
+  --color-slate-950: #020617;
+}
+
+@layer base {
+  :root {
+    --bg-slate-950: 2 6 23;
+  }
+
+  html, body {
+    @apply overflow-x-hidden;
+    max-width: 100vw;
+  }
+
+  body {
+    @apply bg-slate-950 text-slate-100 antialiased selection:bg-necron/30 selection:text-white;
+    /* Removed expensive SVG noise filter for performance */
+    background-image: 
+      radial-gradient(circle at 0% 0%, rgba(220, 38, 38, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(185, 242, 255, 0.05) 0%, transparent 40%);
+    background-attachment: fixed;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-950;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-800 rounded-full border-2 border-slate-950;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-700;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-slate-900/40 backdrop-blur-md border border-slate-800/50 hover:border-slate-700/50 transition-all duration-300;
+  }
+}
