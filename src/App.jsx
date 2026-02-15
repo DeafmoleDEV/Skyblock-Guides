@@ -18,7 +18,7 @@ function App() {
           </Routes>
         </main>
         
-        <footer className="py-5 px-4 border-top mt-5" style={{ borderColor: 'var(--ef-border) !important', backgroundColor: 'var(--ef-bg)' }}>
+        <footer className="py-5 px-4 border-top mt-5" style={{ borderColor: 'var(--ef-border)', backgroundColor: 'var(--ef-bg)' }}>
           <div className="container">
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-center gap-4">
               <div className="d-flex align-items-center gap-2 text-uppercase fw-bold" style={{ fontSize: '10px', letterSpacing: '0.2em', color: 'var(--ef-text-muted)' }}>

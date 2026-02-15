@@ -28,7 +28,7 @@ const GuideCard = ({ guide, delay = 0 }) => {
             {guide.description}
           </p>
           
-          <div className="d-flex align-items-center justify-content-between mt-auto pt-3 border-top" style={{ borderColor: 'var(--ef-border) !important' }}>
+          <div className="d-flex align-items-center justify-content-between mt-auto pt-3 border-top" style={{ borderColor: 'var(--ef-border)' }}>
             <span className="text-uppercase fw-bold" style={{ fontSize: '10px', letterSpacing: '0.1em' }}>By {guide.author}</span>
             <ArrowRight size={14} className="text-primary" />
           </div>

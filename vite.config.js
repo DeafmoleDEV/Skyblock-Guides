@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [
     react(),
   ],
-  base: '/Skyblock-Guides/',
+  base: process.env.NETLIFY ? '/' : '/Skyblock-Guides/',
   test: {
     globals: true,
     environment: 'jsdom',
