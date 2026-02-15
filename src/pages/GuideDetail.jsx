@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, User, Clock } from 'lucide-react';
 import guidesRegistry from '../data/guides';
 import Button from '../components/ui/Button';
-import AdPlacement from '../components/AdPlacement';
 
 const GuideDetail = () => {
   const { id } = useParams();
@@ -81,8 +80,6 @@ const GuideDetail = () => {
             </div>
           </div>
         </header>
-
-        <AdPlacement id={110} />
 
         <motion.div 
           className="border-top border-secondary pt-5"

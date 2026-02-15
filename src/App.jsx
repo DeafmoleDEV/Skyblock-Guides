@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import GuideIndex from './pages/GuideIndex';
 import GuideDetail from './pages/GuideDetail';
+import LegalNotice from './pages/LegalNotice';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/guides" element={<GuideIndex />} />
             <Route path="/guides/:id" element={<GuideDetail />} />
+            <Route path="/privacy" element={<LegalNotice />} />
           </Routes>
         </main>
         
@@ -29,6 +31,7 @@ function App() {
               <div className="d-flex gap-4 text-uppercase fw-bold" style={{ fontSize: '10px', letterSpacing: '0.2em' }}>
                 <a href="https://discord.gg/5humW7QHkK" target="_blank" rel="noopener noreferrer" className="text-decoration-none text-muted hover-primary transition-all">Discord</a>
                 <Link to="/guides" className="text-decoration-none text-muted hover-primary transition-all">Library</Link>
+                <Link to="/privacy" className="text-decoration-none text-muted hover-primary transition-all">Privacy</Link>
               </div>
             </div>
           </div>
