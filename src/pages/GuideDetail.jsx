@@ -14,7 +14,7 @@ const GuideDetail = () => {
   useEffect(() => {
     if (guideMetadata && guideMetadata.contentPath) {
       setLoading(true);
-      fetch(guideMetadata.contentPath)
+      fetch(`${import.meta.env.BASE_URL}${guideMetadata.contentPath}`)
         .then(res => res.text())
         .then(text => {
           setContent(text);
