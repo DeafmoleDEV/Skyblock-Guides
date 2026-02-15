@@ -2,10 +2,7 @@
 export const categories = [
   "Dungeons",
   "Slayers",
-  "Mining",
-  "Kuudra",
-  "Farming",
-  "Fishing"
+  "Mining"
 ];
 
 const guidesRegistry = [
@@ -22,8 +19,8 @@ const guidesRegistry = [
   },
   {
     id: 't5-rev-slayer',
-    title: 'Axe of the Shredded: T5 Revenant Guide',
-    description: 'Master the fastest slayer with this melee-focused guide.',
+    title: 'T5 Revenant Guide',
+    description: 'Complete this shitty grind in less than 2 hours.',
     author: 'SlayerKing',
     date: 'Feb 01, 2026',
     category: 'Slayers',
@@ -33,12 +30,12 @@ const guidesRegistry = [
   },
   {
     id: 'mining-progression',
-    title: 'HOTM 7: The Path to 10M Mining Speed',
-    description: 'Everything from Mithril to Gemstones.',
+    title: 'HOTM 7 in 5 hours',
+    description: 'Everything from First step in Dwarven Mines to Making 60m per hour.',
     author: 'GoldDigger',
     date: 'Jan 15, 2026',
     category: 'Mining',
-    contentPath: null,
+    contentPath: null, // Placeholder
     image: 'bg-gradient-to-br from-diamond/40 to-slate-900',
     tags: ['Mining', 'HOTM']
   }

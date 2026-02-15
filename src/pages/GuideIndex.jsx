@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Clock, User, ChevronRight, Search } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import guidesRegistry, { categories } from '../data/guides';
 
 const GuideIndex = () => {
-  const [activeCategory, setActiveCategory] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryParam = searchParams.get('category') || 'All';
+  const queryParam = searchParams.get('search') || '';
+
+  const [activeCategory, setActiveCategory] = useState(categoryParam);
+  const [searchQuery, setSearchQuery] = useState(queryParam);
+
+  useEffect(() => {
+    setActiveCategory(categoryParam);
+    setSearchQuery(queryParam);
+  }, [categoryParam, queryParam]);
 
   const filteredGuides = guidesRegistry.filter(guide => {
     const matchesCategory = activeCategory === 'All' || guide.category === activeCategory;
@@ -14,109 +22,85 @@ const GuideIndex = () => {
     return matchesCategory && matchesSearch;
   });
 
+  const updateCategory = (cat) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (cat === 'All') {
+      newParams.delete('category');
+    } else {
+      newParams.set('category', cat);
+    }
+    setSearchParams(newParams);
+  };
+
+  const updateSearch = (query) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (!query) {
+      newParams.delete('search');
+    } else {
+      newParams.set('search', query);
+    }
+    setSearchParams(newParams);
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center mb-16">
-        <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tighter uppercase">
-          Library of <span className="text-necron italic">Skyblock</span>
-        </h1>
-        <p className="text-slate-400 max-w-2xl mx-auto">
-          The most comprehensive collection of Hypixel Skyblock knowledge. Filter by category or search for specific items and strategies.
-        </p>
+    <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="mb-12">
+        <h1 className="text-2xl font-bold text-white mb-2 uppercase tracking-tight">Library</h1>
+        <p className="text-slate-500 text-sm">Browse all available progression guides.</p>
       </div>
 
-      <div className="flex flex-col gap-8 mb-12">
-        {/* Search Bar */}
-        <div className="relative max-w-xl mx-auto w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-          <input 
-            type="text"
-            placeholder="Search guides, tags, or items..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-900/50 border border-slate-800 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-necron/50 transition-all"
-          />
-        </div>
-
-        {/* Categories */}
-        <div className="flex flex-wrap justify-center gap-2">
-          <CategoryButton 
-            label="All" 
-            isActive={activeCategory === 'All'} 
-            onClick={() => setActiveCategory('All')} 
-          />
+      <div className="flex flex-col md:flex-row gap-4 mb-12">
+        <input 
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => updateSearch(e.target.value)}
+          className="flex-1 bg-transparent border border-white/10 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-white/20 transition-colors"
+        />
+        <div className="flex flex-wrap gap-2">
+          <button 
+            onClick={() => updateCategory('All')}
+            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors ${activeCategory === 'All' ? 'bg-white text-black' : 'border border-white/10 text-slate-500 hover:text-white'}`}
+          >
+            All
+          </button>
           {categories.map((cat) => (
-            <CategoryButton 
+            <button 
               key={cat} 
-              label={cat} 
-              isActive={activeCategory === cat} 
-              onClick={() => setActiveCategory(cat)} 
-            />
+              onClick={() => updateCategory(cat)}
+              className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-colors ${activeCategory === cat ? 'bg-white text-black' : 'border border-white/10 text-slate-500 hover:text-white'}`}
+            >
+              {cat}
+            </button>
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredGuides.map((guide) => (
-          <Link key={guide.id} to={`/guides/${guide.id}`} className="group">
-            <div className="glass-card rounded-2xl overflow-hidden flex flex-col h-full">
-              <div className={`h-40 ${guide.image} relative flex items-center justify-center overflow-hidden`}>
-                <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition-colors" />
-                <span className="text-white font-black text-3xl opacity-20 uppercase tracking-tighter group-hover:scale-110 transition-transform duration-500">
-                  {guide.category}
-                </span>
-              </div>
-              <div className="p-6 flex-grow flex flex-col">
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {guide.tags.map(tag => (
-                    <span key={tag} className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-800/50 text-slate-400 border border-slate-700/50">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-gold transition-colors">
-                  {guide.title}
-                </h3>
-                <p className="text-slate-400 text-sm line-clamp-2 mb-6 leading-relaxed">
-                  {guide.description}
-                </p>
-                <div className="mt-auto flex items-center justify-between pt-6 border-t border-slate-800/50 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
-                  <div className="flex items-center gap-4">
-                    <span className="flex items-center gap-1">
-                      <User className="w-3 h-3 text-necron" /> {guide.author}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {guide.date}
-                    </span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-necron group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
+          <Link key={guide.id} to={`/guides/${guide.id}`} className="card p-6 group">
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">{guide.category}</p>
+            <h3 className="text-lg font-bold text-white group-hover:underline transition-all mb-2">
+              {guide.title}
+            </h3>
+            <p className="text-slate-500 text-sm line-clamp-2 mb-4">
+              {guide.description}
+            </p>
+            <div className="flex items-center justify-between text-[10px] font-medium uppercase text-slate-600">
+              <span>By {guide.author}</span>
+              <span>{guide.date}</span>
             </div>
           </Link>
         ))}
       </div>
       
       {filteredGuides.length === 0 && (
-        <div className="text-center py-20">
-          <p className="text-slate-500">No guides found matching your criteria.</p>
+        <div className="py-20 text-center">
+          <p className="text-slate-500 text-sm">No results found.</p>
         </div>
       )}
     </div>
   );
 };
-
-const CategoryButton = ({ label, isActive, onClick }) => (
-  <button 
-    onClick={onClick}
-    className={`px-6 py-2 rounded-xl text-sm font-bold uppercase tracking-wider transition-all border ${
-      isActive 
-        ? 'bg-necron text-white border-necron shadow-lg shadow-necron/20' 
-        : 'bg-slate-900/50 text-slate-500 border-slate-800 hover:text-slate-300 hover:border-slate-700'
-    }`}
-  >
-    {label}
-  </button>
-);
 
 export default GuideIndex;
