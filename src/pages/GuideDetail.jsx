@@ -39,7 +39,7 @@ const GuideDetail = () => {
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-12">
-      <Link to="/guides" className="text-xs uppercase tracking-widest text-slate-600 hover:text-white transition-colors mb-12 inline-block">
+      <Link to="/guides" className="text-xs uppercase tracking-widest text-slate-400 hover:text-white transition-colors mb-12 inline-block">
         ← Back
       </Link>
 
@@ -52,7 +52,7 @@ const GuideDetail = () => {
             {guideMetadata.title}
           </h1>
 
-          <div className="flex items-center gap-4 text-[10px] font-medium uppercase text-slate-600 border-b border-white/5 pb-8">
+          <div className="flex items-center gap-4 text-[10px] font-medium uppercase text-slate-500 border-b border-white/5 pb-8">
             <span>By {guideMetadata.author}</span>
             <span>•</span>
             <span>{guideMetadata.date}</span>
@@ -69,17 +69,17 @@ const GuideDetail = () => {
             <div className="prose prose-invert prose-slate max-w-none 
               prose-headings:text-white prose-headings:font-bold prose-headings:uppercase prose-headings:tracking-tight
               prose-h2:text-xl prose-h2:mt-12 prose-h2:mb-6
-              prose-p:text-slate-400 prose-p:leading-relaxed prose-p:text-base
+              prose-p:text-slate-300 prose-p:leading-relaxed prose-p:text-base
               prose-strong:text-white
-              prose-blockquote:border-l border-white/20 prose-blockquote:italic prose-blockquote:text-slate-500
-              prose-li:text-slate-400
+              prose-blockquote:border-l border-white/20 prose-blockquote:italic prose-blockquote:text-slate-400
+              prose-li:text-slate-300
             ">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {content}
               </ReactMarkdown>
             </div>
           ) : (
-            <p className="text-slate-600 italic text-sm">Content unavailable.</p>
+            <p className="text-slate-500 italic text-sm">Content unavailable.</p>
           )}
         </div>
       </article>

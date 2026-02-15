@@ -18,7 +18,7 @@ const Home = () => {
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight uppercase">
           Skyblock Guides
         </h1>
-        <p className="text-slate-500 text-lg max-w-xl mb-12">
+        <p className="text-slate-400 text-lg max-w-xl mb-12">
           Best Skyblock resource for getting better at the game and progressing faster
         </p>
 
@@ -28,10 +28,10 @@ const Home = () => {
             placeholder="Search guides..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-transparent border-b border-white/20 py-3 text-white placeholder:text-slate-700 focus:outline-none focus:border-white transition-colors"
+            className="w-full bg-transparent border-b border-white/20 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-white transition-colors"
           />
         </form>
-        <Link to="/guides" className="text-xs font-bold uppercase tracking-widest text-slate-600 hover:text-white transition-colors">
+        <Link to="/guides" className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white transition-colors">
           Browse full library →
         </Link>
       </div>
@@ -65,7 +65,7 @@ const CategoryCard = ({ title, description, onClick }) => (
     <h3 className="text-sm font-bold text-white uppercase tracking-widest mb-2 group-hover:underline">
       {title}
     </h3>
-    <p className="text-slate-500 text-xs">
+    <p className="text-slate-400 text-xs">
       {description}
     </p>
   </button>

@@ -9,7 +9,7 @@
 
 @layer base {
   body {
-    @apply bg-black text-slate-400 antialiased selection:bg-white/10 selection:text-white;
+    @apply bg-black text-slate-300 antialiased selection:bg-white/10 selection:text-white;
   }
 }
 

@@ -8,7 +8,7 @@ import GuideDetail from './pages/GuideDetail';
 function App() {
   return (
     <Router basename={import.meta.env.BASE_URL}>
-      <div className="min-h-screen bg-black text-slate-400 flex flex-col font-sans">
+      <div className="min-h-screen bg-black text-slate-300 flex flex-col font-sans">
         <Navbar />
         <main className="flex-grow">
           <Routes>
@@ -18,7 +18,7 @@ function App() {
           </Routes>
         </main>
         
-        <footer className="py-12 px-6 text-[10px] font-medium uppercase tracking-[0.2em] text-slate-700">
+        <footer className="py-12 px-6 text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500">
           <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <p>© 2026 Skyblock Guides</p>
             <div className="flex gap-8">
