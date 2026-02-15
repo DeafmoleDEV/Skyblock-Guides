@@ -100,7 +100,7 @@ const GuideDetail = () => {
             <div className="prose prose-invert prose-slate max-w-none 
               prose-headings:text-white prose-headings:font-black prose-headings:tracking-tight
               prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:pb-4 prose-h2:border-b prose-h2:border-slate-800
-              prose-p:text-slate-300 prose-p:leading-relaxed prose-p:text-lg
+              prose-p:text-slate-300 prose-p:leading-normal prose-p:text-lg
               prose-strong:text-white prose-strong:font-bold
               prose-blockquote:border-l-4 prose-blockquote:border-necron prose-blockquote:bg-slate-900/50 prose-blockquote:py-1 prose-blockquote:px-6 prose-blockquote:rounded-r-xl
               prose-table:bg-slate-900/30 prose-table:rounded-xl prose-table:overflow-hidden

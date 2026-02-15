@@ -18,7 +18,7 @@ const Home = () => {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-necron via-gold to-diamond">Skyblock Meta</span>
           </h1>
           
-          <p className="mt-8 text-lg leading-relaxed text-slate-400 font-medium animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          <p className="mt-8 text-lg leading-normal text-slate-400 font-medium animate-in fade-in slide-in-from-bottom-8 duration-1000">
             Expert-written guides for Dungeons, Slayers, and Mining. From your first zombie kill to the final Master Mode 7 clear. We’ve got your progression covered.
           </p>
 

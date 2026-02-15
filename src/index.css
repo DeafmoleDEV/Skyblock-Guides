@@ -20,7 +20,7 @@
   }
 
   body {
-    @apply bg-slate-950 text-slate-100 antialiased selection:bg-necron/30 selection:text-white;
+    @apply bg-slate-950 text-slate-100 antialiased leading-normal selection:bg-necron/30 selection:text-white;
     /* Removed expensive SVG noise filter for performance */
     background-image: 
       radial-gradient(circle at 0% 0%, rgba(220, 38, 38, 0.05) 0%, transparent 40%),
