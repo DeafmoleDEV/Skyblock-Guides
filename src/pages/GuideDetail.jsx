@@ -4,30 +4,61 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, User, Clock } from 'lucide-react';
-import guidesRegistry from '../data/guides';
+import localGuides from '../data/guides';
+import { supabase } from '../lib/supabase';
 import Button from '../components/ui/Button';
 
 const GuideDetail = () => {
   const { id } = useParams();
-  const guideMetadata = guidesRegistry.find(g => g.id === id);
+  const [guideMetadata, setGuideMetadata] = useState(localGuides.find(g => g.id === id));
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (guideMetadata && guideMetadata.contentPath) {
-      fetch(`${import.meta.env.BASE_URL}${guideMetadata.contentPath}`)
-        .then(res => res.text())
-        .then(text => {
-          setContent(text);
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error("Failed to load guide:", err);
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
+    async function fetchGuideData() {
+      let currentMetadata = guideMetadata;
+
+      // If not in local storage, try fetching from Supabase
+      if (!currentMetadata) {
+        try {
+          const { data, error } = await supabase
+            .from('guides')
+            .select('*')
+            .eq('id', id)
+            .single();
+          
+          if (data) {
+            currentMetadata = data;
+            setGuideMetadata(data);
+          }
+        } catch (err) {
+          console.error("Error fetching guide metadata:", err);
+        }
+      }
+
+      if (currentMetadata && (currentMetadata.contentPath || currentMetadata.content_path)) {
+        const path = currentMetadata.content_path || currentMetadata.contentPath;
+        // Check if path is a full URL or a local path
+        const url = path.startsWith('http') 
+          ? path 
+          : `${import.meta.env.BASE_URL}${path}`;
+
+        fetch(url)
+          .then(res => res.text())
+          .then(text => {
+            setContent(text);
+            setLoading(false);
+          })
+          .catch(err => {
+            console.error("Failed to load guide content:", err);
+            setLoading(false);
+          });
+      } else {
+        setLoading(false);
+      }
     }
+
+    fetchGuideData();
   }, [id, guideMetadata]);
 
   if (!guideMetadata) {

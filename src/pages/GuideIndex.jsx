@@ -1,19 +1,45 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
-import guidesRegistry, { categories } from '../data/guides';
+import localGuides, { categories } from '../data/guides';
+import { supabase } from '../lib/supabase';
 import GuideCard from '../components/GuideCard';
 import Button from '../components/ui/Button';
 
 const GuideIndex = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [guides, setGuides] = useState(localGuides);
+  const [loading, setLoading] = useState(true);
   const activeCategory = searchParams.get('category') || 'All';
   const searchQuery = searchParams.get('search') || '';
 
-  const filteredGuides = guidesRegistry.filter(guide => {
+  useEffect(() => {
+    async function fetchGuides() {
+      try {
+        const { data, error } = await supabase
+          .from('guides')
+          .select('*')
+          .order('date', { ascending: false });
+
+        if (error) throw error;
+        if (data && data.length > 0) {
+          setGuides(data);
+        }
+      } catch (err) {
+        console.error("Error fetching guides from Supabase:", err);
+        // Fallback to localGuides is already set in initial state
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchGuides();
+  }, []);
+
+  const filteredGuides = guides.filter(guide => {
     const matchesCategory = activeCategory === 'All' || guide.category === activeCategory;
     const matchesSearch = guide.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         guide.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+                         (guide.tags && guide.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())));
     return matchesCategory && matchesSearch;
   });
 
