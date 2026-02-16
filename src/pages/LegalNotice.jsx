@@ -39,6 +39,7 @@ const LegalNotice = () => {
           <p>
             This website uses Ezoic to provide personalization and analytical services. As such, Ezoic's privacy policy is in effect and can be reviewed here: <a href="https://www.ezoic.com/privacy-policy/" target="_blank" rel="noopener noreferrer">https://www.ezoic.com/privacy-policy/</a>.
           </p>
+          <span id="ezoic-privacy-policy-embed"></span>
 
           <h2>How We Use Your Data</h2>
           <p>
