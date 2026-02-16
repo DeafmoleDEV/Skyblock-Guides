@@ -10,35 +10,42 @@ import Button from '../components/ui/Button';
 
 const GuideDetail = () => {
   const { id } = useParams();
-  const [guideMetadata, setGuideMetadata] = useState(localGuides.find(g => g.id === id));
+  const [guideMetadata, setGuideMetadata] = useState(null);
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchGuideData() {
-      let currentMetadata = guideMetadata;
+      let currentMetadata = null;
 
-      // If not in local storage, try fetching from Supabase
+      // 1. Try fetching from Supabase FIRST (Priority)
+      try {
+        const { data, error } = await supabase
+          .from('guides')
+          .select('*')
+          .eq('id', id)
+          .single();
+        
+        if (data) {
+          currentMetadata = data;
+          setGuideMetadata(data);
+        }
+      } catch (err) {
+        console.log("Supabase fetch failed or not configured, checking local data...");
+      }
+
+      // 2. Fallback to local data if Supabase didn't have it
       if (!currentMetadata) {
-        try {
-          const { data, error } = await supabase
-            .from('guides')
-            .select('*')
-            .eq('id', id)
-            .single();
-          
-          if (data) {
-            currentMetadata = data;
-            setGuideMetadata(data);
-          }
-        } catch (err) {
-          console.error("Error fetching guide metadata:", err);
+        const local = localGuides.find(g => g.id === id);
+        if (local) {
+          currentMetadata = local;
+          setGuideMetadata(local);
         }
       }
 
+      // 3. Fetch the actual content (Markdown)
       if (currentMetadata && (currentMetadata.contentPath || currentMetadata.content_path)) {
         const path = currentMetadata.content_path || currentMetadata.contentPath;
-        // Check if path is a full URL or a local path
         const url = path.startsWith('http') 
           ? path 
           : `${import.meta.env.BASE_URL}${path}`;
@@ -59,7 +66,21 @@ const GuideDetail = () => {
     }
 
     fetchGuideData();
-  }, [id, guideMetadata]);
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="container py-5 max-w-4xl">
+        <div className="animate-pulse">
+          <div className="bg-dark rounded mb-3" style={{ height: '40px', width: '50%' }}></div>
+          <div className="bg-dark rounded mb-5" style={{ height: '20px', width: '30%' }}></div>
+          <div className="bg-dark rounded mb-3" style={{ height: '20px', width: '100%' }}></div>
+          <div className="bg-dark rounded mb-3" style={{ height: '20px', width: '90%' }}></div>
+          <div className="bg-dark rounded-5 mt-5" style={{ height: '400px' }}></div>
+        </div>
+      </div>
+    );
+  }
 
   if (!guideMetadata) {
     return (
@@ -107,7 +128,7 @@ const GuideDetail = () => {
             </div>
             <div className="d-flex align-items-center gap-2">
               <Clock size={14} className="text-primary" />
-              <span>10 MIN READ</span>
+              <span>{guideMetadata.reading_time || '10 MIN READ'}</span>
             </div>
           </div>
         </header>
@@ -118,14 +139,7 @@ const GuideDetail = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          {loading ? (
-            <div className="animate-pulse">
-              <div className="bg-dark rounded mb-3" style={{ height: '20px', width: '75%' }}></div>
-              <div className="bg-dark rounded mb-3" style={{ height: '20px', width: '100%' }}></div>
-              <div className="bg-dark rounded mb-3" style={{ height: '20px', width: '90%' }}></div>
-              <div className="bg-dark rounded-5 mt-5" style={{ height: '300px' }}></div>
-            </div>
-          ) : content ? (
+          {content ? (
             <div className="prose-custom">
               <ReactMarkdown 
                 remarkPlugins={[remarkGfm]}
