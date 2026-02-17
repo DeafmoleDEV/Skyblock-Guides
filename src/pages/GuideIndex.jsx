@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search } from 'lucide-react';
-import localGuides, { categories } from '../data/guides';
+import { Search, Loader2 } from 'lucide-react';
+import localGuides from '../data/guides';
 import { supabase } from '../lib/supabase';
+import { useCategories } from '../lib/CategoriesContext';
 import GuideCard from '../components/GuideCard';
 import Button from '../components/ui/Button';
 
 const GuideIndex = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [guides, setGuides] = useState(localGuides);
+  const categories = useCategories();
+  const [guides, setGuides] = useState([]);
   const [loading, setLoading] = useState(true);
   const activeCategory = searchParams.get('category') || 'All';
   const searchQuery = searchParams.get('search') || '';
@@ -24,10 +26,12 @@ const GuideIndex = () => {
         if (error) throw error;
         if (data && data.length > 0) {
           setGuides(data);
+        } else {
+          setGuides(localGuides);
         }
       } catch (err) {
         console.error("Error fetching guides from Supabase:", err);
-        // Fallback to localGuides is already set in initial state
+        setGuides(localGuides);
       } finally {
         setLoading(false);
       }
@@ -38,7 +42,8 @@ const GuideIndex = () => {
 
   const filteredGuides = guides.filter(guide => {
     const matchesCategory = activeCategory === 'All' || guide.category === activeCategory;
-    const matchesSearch = guide.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const title = guide.title || '';
+    const matchesSearch = title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                          (guide.tags && guide.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())));
     return matchesCategory && matchesSearch;
   });
@@ -79,8 +84,8 @@ const GuideIndex = () => {
               placeholder="Search guides..."
               value={searchQuery}
               onChange={(e) => updateSearch(e.target.value)}
-              className="form-control bg-deep border-secondary text-black ps-5 py-3 rounded-3 shadow-none focus-ring focus-ring-primary"
-              style={{ borderColor: '#333' }}
+              className="form-control bg-deep border-secondary text-white ps-5 py-3 rounded-3 shadow-none focus-ring focus-ring-primary"
+              style={{ borderColor: '#333', backgroundColor: '#111' }}
             />
           </div>
         </div>
@@ -107,26 +112,35 @@ const GuideIndex = () => {
         </div>
       </div>
 
-      <div className="row g-4">
-        {filteredGuides.map((guide, index) => (
-          <div className="col-md-6 col-lg-4" key={guide.id}>
-            <GuideCard guide={guide} delay={index * 0.1} />
-          </div>
-        ))}
-      </div>
-      
-      {filteredGuides.length === 0 && (
-        <div className="py-5 text-center bg-surface rounded-5 border border-secondary border-dashed mt-5">
-          <p className="h4 text-muted fw-bold">No guides found matching your search.</p>
-          <Button 
-            onClick={() => {updateSearch(''); updateCategory('All')}} 
-            variant="ghost" 
-            size="sm"
-            className="mt-2 text-primary"
-          >
-            RESET FILTERS
-          </Button>
+      {loading ? (
+        <div className="py-5 text-center">
+          <Loader2 className="animate-spin text-primary mx-auto mb-3" size={48} />
+          <p className="text-muted fw-medium">Loading guides...</p>
         </div>
+      ) : (
+        <>
+          <div className="row g-4">
+            {filteredGuides.map((guide, index) => (
+              <div className="col-md-6 col-lg-4" key={guide.id}>
+                <GuideCard guide={guide} delay={index * 0.1} />
+              </div>
+            ))}
+          </div>
+          
+          {filteredGuides.length === 0 && (
+            <div className="py-5 text-center bg-surface rounded-5 border border-secondary border-dashed mt-5">
+              <p className="h4 text-muted fw-bold">No guides found matching your search.</p>
+              <Button 
+                onClick={() => {updateSearch(''); updateCategory('All')}} 
+                variant="ghost" 
+                size="sm"
+                className="mt-2 text-primary"
+              >
+                RESET FILTERS
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

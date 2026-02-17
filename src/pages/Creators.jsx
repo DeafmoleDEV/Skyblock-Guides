@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Users, AlertTriangle } from 'lucide-react';
+import { Users, AlertTriangle, ExternalLink, Video, MessageSquare } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import Card from '../components/ui/Card';
 
@@ -14,24 +14,70 @@ const CreatorCard = ({ creator, delay = 0 }) => {
       transition={{ delay: delay, duration: 0.3 }}
     >
       <div className="flex-grow-1">
-        <h3 className="h5 fw-bold text-white mb-3 text-uppercase tracking-wider">
-          {creator.name}
-        </h3>
+        <div className="d-flex align-items-center gap-3 mb-3">
+          {creator.avatar_url && (
+            <img 
+              src={creator.avatar_url} 
+              alt={creator.name} 
+              className="rounded-circle border border-2 border-secondary"
+              style={{ width: '48px', height: '48px', objectFit: 'cover' }}
+            />
+          )}
+          <h3 className="h5 fw-bold text-white mb-0 text-uppercase tracking-wider">
+            {creator.name}
+          </h3>
+        </div>
         
-        {creator.youtube_id && (
-          <div 
-            className="youtube-subscribe p-3 rounded-3 mb-3 d-flex justify-content-center align-items-center" 
-            style={{ backgroundColor: '#333', border: '1px solid var(--ef-border)', minHeight: '68px' }}
-          >
+        <div className="d-flex flex-column gap-2 mb-3">
+          {creator.youtube_id && (
             <div 
-              className="g-ytsubscribe" 
-              data-channelid={creator.youtube_id}
-              data-layout="full" 
-              data-count="default"
-              data-theme="dark"
-            ></div>
-          </div>
-        )}
+              className="youtube-subscribe p-3 rounded-3 d-flex justify-content-center align-items-center" 
+              style={{ backgroundColor: '#333', border: '1px solid var(--ef-border)', minHeight: '68px' }}
+            >
+              <div 
+                className="g-ytsubscribe" 
+                data-channelid={creator.youtube_id}
+                data-layout="full" 
+                data-count="default"
+                data-theme="dark"
+              ></div>
+            </div>
+          )}
+
+          {creator.tiktok_username && (
+            <a 
+              href={`https://www.tiktok.com/@${creator.tiktok_username}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="platform-link p-3 rounded-3 d-flex align-items-center gap-3 text-decoration-none"
+              style={{ backgroundColor: '#333', border: '1px solid var(--ef-border)', color: '#fff' }}
+            >
+              <Video size={20} className="text-primary" />
+              <div className="flex-grow-1">
+                <div className="small fw-bold">TikTok</div>
+                <div className="text-muted extra-small">@{creator.tiktok_username}</div>
+              </div>
+              <ExternalLink size={14} className="opacity-50" />
+            </a>
+          )}
+
+          {creator.forums_url && (
+            <a 
+              href={creator.forums_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="platform-link p-3 rounded-3 d-flex align-items-center gap-3 text-decoration-none"
+              style={{ backgroundColor: '#333', border: '1px solid var(--ef-border)', color: '#fff' }}
+            >
+              <MessageSquare size={20} className="text-primary" />
+              <div className="flex-grow-1">
+                <div className="small fw-bold">Hypixel Forums</div>
+                <div className="text-muted extra-small">View Profile</div>
+              </div>
+              <ExternalLink size={14} className="opacity-50" />
+            </a>
+          )}
+        </div>
 
         <p className="small mb-0" style={{ color: 'var(--ef-text-muted)', lineHeight: '1.5' }}>
           {creator.description || `High-quality Skyblock content and guides.`}

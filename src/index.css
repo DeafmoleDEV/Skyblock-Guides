@@ -141,6 +141,20 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid rgba(85, 255, 85, 0.2);
 }
 
+.platform-link {
+  transition: all 0.2s ease;
+}
+
+.platform-link:hover {
+  background-color: #3a3a3a !important;
+  border-color: var(--ef-primary) !important;
+  transform: translateX(4px);
+}
+
+.extra-small {
+  font-size: 0.7rem;
+}
+
 /* Navbar */
 .navbar-custom {
   background-color: rgba(12, 12, 12, 0.9);
