@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Zap, Target, Pickaxe } from 'lucide-react';
+import { Skull, Swords, Pickaxe } from 'lucide-react';
 import Hero from '../components/Hero';
 import CategoryCard from '../components/CategoryCard';
 
@@ -34,7 +34,7 @@ const Home = () => {
           <CategoryCard 
             title="Dungeons" 
             description="From F1 to M7, master every floor with optimal setups." 
-            icon={<Zap className="text-primary" size={32} />}
+            icon={<Skull className="text-primary" size={32} />}
             onClick={() => navigate('/guides?category=Dungeons')}
             delay={0.2}
           />
@@ -43,7 +43,7 @@ const Home = () => {
           <CategoryCard 
             title="Slayers" 
             description="Voidgloom Seraph, Inferno Demonlord, and more." 
-            icon={<Target className="text-accent" size={32} />}
+            icon={<Swords className="text-accent" size={32} />}
             onClick={() => navigate('/guides?category=Slayers')}
             delay={0.4}
           />

@@ -60,7 +60,16 @@ const GuideDetail = () => {
               return mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
             })
             .then(result => {
-              setContent(result.value);
+              // Use DOMParser to safely add target="_blank" and rel="noopener noreferrer" to links
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(result.value, 'text/html');
+              const links = doc.querySelectorAll('a');
+              links.forEach(link => {
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+              });
+              
+              setContent(doc.body.innerHTML);
               setLoading(false);
             })
             .catch(err => {

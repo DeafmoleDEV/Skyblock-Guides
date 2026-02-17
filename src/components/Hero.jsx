@@ -78,7 +78,7 @@ const Hero = ({ onSearch, searchQuery, setSearchQuery, onTagClick }) => {
                   <Search className="position-absolute start-0 top-50 translate-middle-y ms-3 text-muted" size={18} />
                   <input 
                     type="text"
-                    placeholder="e.g. 'M7 Tank Setup'..."
+                    placeholder="e.g. 'F7 Tank Setup'..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="input-custom ps-5"
@@ -112,14 +112,14 @@ const Hero = ({ onSearch, searchQuery, setSearchQuery, onTagClick }) => {
                   <Search className="position-absolute start-0 top-50 translate-middle-y ms-3 text-muted" size={18} />
                   <input 
                     type="text"
-                    placeholder="e.g. 'M7 Tank Setup'..."
+                    placeholder="e.g. 'F7 Tank Setup'..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="input-custom ps-5"
                   />
                 </div>
                 <div className="mt-4 d-flex flex-wrap gap-2">
-                  {['M7', 'Voidgloom', 'Mining'].map(tag => (
+                  {['F7', 'Archer', 'MP'].map(tag => (
                     <button 
                       key={tag} 
                       type="button"
