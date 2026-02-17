@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import GuideIndex from './pages/GuideIndex';
 import GuideDetail from './pages/GuideDetail';
 import LegalNotice from './pages/LegalNotice';
+import Creators from './pages/Creators';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/guides" element={<GuideIndex />} />
             <Route path="/guides/:id" element={<GuideDetail />} />
+            <Route path="/creators" element={<Creators />} />
             <Route path="/privacy" element={<LegalNotice />} />
           </Routes>
         </main>

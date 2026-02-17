@@ -17,6 +17,9 @@ const Navbar = () => {
           <Link to="/guides" className="nav-link text-uppercase fw-bold text-white-50 hover-white small tracking-widest">
             Guides
           </Link>
+          <Link to="/creators" className="nav-link text-uppercase fw-bold text-white-50 hover-white small tracking-widest">
+            Creators
+          </Link>
           <a href="https://discord.gg/5humW7QHkK" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
             Discord
           </a>

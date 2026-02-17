@@ -52,7 +52,7 @@ const Home = () => {
           <CategoryCard 
             title="Mining" 
             description="Max your mithril powder and optimize your routes." 
-            icon={<Pickaxe className="text-secondary" size={32} />}
+            icon={<Pickaxe className="text-accent" size={32} />}
             onClick={() => navigate('/guides?category=Mining')}
             delay={0.6}
           />
