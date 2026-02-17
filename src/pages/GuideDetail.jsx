@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import mammoth from 'mammoth';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, User, Clock } from 'lucide-react';
 import localGuides from '../data/guides';
@@ -12,6 +13,7 @@ const GuideDetail = () => {
   const { id } = useParams();
   const [guideMetadata, setGuideMetadata] = useState(null);
   const [content, setContent] = useState('');
+  const [contentType, setContentType] = useState('markdown'); // 'markdown' or 'html'
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,7 +22,7 @@ const GuideDetail = () => {
 
       // 1. Try fetching from Supabase FIRST (Priority)
       try {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from('guides')
           .select('*')
           .eq('id', id)
@@ -30,7 +32,7 @@ const GuideDetail = () => {
           currentMetadata = data;
           setGuideMetadata(data);
         }
-      } catch (err) {
+      } catch {
         console.log("Supabase fetch failed or not configured, checking local data...");
       }
 
@@ -43,23 +45,41 @@ const GuideDetail = () => {
         }
       }
 
-      // 3. Fetch the actual content (Markdown)
+      // 3. Fetch the actual content
       if (currentMetadata && (currentMetadata.contentPath || currentMetadata.content_path)) {
         const path = currentMetadata.content_path || currentMetadata.contentPath;
         const url = path.startsWith('http') 
           ? path 
           : `${import.meta.env.BASE_URL}${path}`;
 
-        fetch(url)
-          .then(res => res.text())
-          .then(text => {
-            setContent(text);
-            setLoading(false);
-          })
-          .catch(err => {
-            console.error("Failed to load guide content:", err);
-            setLoading(false);
-          });
+        if (path.endsWith('.docx')) {
+          setContentType('html');
+          fetch(url)
+            .then(res => res.arrayBuffer())
+            .then(arrayBuffer => {
+              return mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+            })
+            .then(result => {
+              setContent(result.value);
+              setLoading(false);
+            })
+            .catch(err => {
+              console.error("Failed to load .docx guide content:", err);
+              setLoading(false);
+            });
+        } else {
+          setContentType('markdown');
+          fetch(url)
+            .then(res => res.text())
+            .then(text => {
+              setContent(text);
+              setLoading(false);
+            })
+            .catch(err => {
+              console.error("Failed to load markdown guide content:", err);
+              setLoading(false);
+            });
+        }
       } else {
         setLoading(false);
       }
@@ -141,14 +161,18 @@ const GuideDetail = () => {
         >
           {content ? (
             <div className="prose-custom">
-              <ReactMarkdown 
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  a: (props) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-primary fw-bold" />
-                }}
-              >
-                {content}
-              </ReactMarkdown>
+              {contentType === 'html' ? (
+                <div dangerouslySetInnerHTML={{ __html: content }} />
+              ) : (
+                <ReactMarkdown 
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    a: (props) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-primary fw-bold" />
+                  }}
+                >
+                  {content}
+                </ReactMarkdown>
+              )}
             </div>
           ) : (
             <p className="text-center py-5 italic text-muted">Content unavailable.</p>

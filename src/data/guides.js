@@ -13,7 +13,7 @@ const guidesRegistry = [
     author: 'lotrszefOP',
     date: 'Jan 26, 2026',
     category: 'Dungeons',
-    contentPath: 'data/markdown/f7-gear-guide.md', // We'll fetch this
+    contentPath: 'data/guides/f7-gear-guide.docx', // Now using .docx
     tags: ['F7', 'Archer', 'Berserker']
   },
   {
