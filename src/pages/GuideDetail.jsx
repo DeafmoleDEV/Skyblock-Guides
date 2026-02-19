@@ -48,9 +48,11 @@ const GuideDetail = () => {
       // 3. Fetch the actual content
       if (currentMetadata && (currentMetadata.contentPath || currentMetadata.content_path)) {
         const path = currentMetadata.content_path || currentMetadata.contentPath;
+        const separator = path.includes('?') ? '&' : '?';
+        const cacheBuster = `${separator}t=${new Date().getTime()}`;
         const url = path.startsWith('http') 
           ? path 
-          : `${import.meta.env.BASE_URL}${path}`;
+          : `${import.meta.env.BASE_URL}${path}${cacheBuster}`;
 
         if (path.endsWith('.docx')) {
           setContentType('html');

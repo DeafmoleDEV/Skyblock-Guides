@@ -78,7 +78,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-primary:hover {
   background-color: #44ee44;
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(85, 255, 85, 0.2);
 }
 
@@ -153,6 +152,22 @@ h1, h2, h3, h4, h5, h6 {
 
 .extra-small {
   font-size: 0.7rem;
+}
+
+/* Helper Classes */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+
+.scale-on-hover {
+  transition: transform 0.2s ease;
+}
+
+.group:hover .scale-on-hover {
+  transform: translate(-50%, -50%) scale(1.1) !important;
 }
 
 /* Navbar */

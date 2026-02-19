@@ -31,7 +31,7 @@ const Card = ({
     <motion.div
       className={cardClasses}
       onClick={onClick}
-      whileHover={hoverable ? { y: -2, borderColor: '#55ff55' } : {}}
+      whileHover={hoverable ? { borderColor: '#55ff55' } : {}}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
