@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import mammoth from 'mammoth';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, User, Clock } from 'lucide-react';
 import localGuides from '../data/guides';
 import { supabase } from '../lib/supabase';
 import Button from '../components/ui/Button';
+
+// Heavy libraries will be loaded dynamically
+let mammothModule = null;
+let ReactMarkdownModule = null;
+let remarkGfmModule = null;
+
+// Persistent cache to avoid re-converting the same file in a single session
+const docxHtmlCache = new Map();
 
 const GuideDetail = () => {
   const { id } = useParams();
@@ -15,8 +20,26 @@ const GuideDetail = () => {
   const [content, setContent] = useState('');
   const [contentType, setContentType] = useState('markdown'); // 'markdown' or 'html'
   const [loading, setLoading] = useState(true);
+  const [libsLoaded, setLibsLoaded] = useState(false);
 
   useEffect(() => {
+    // ... loadLibraries ...
+    const loadLibraries = async () => {
+      try {
+        const [rm, rg] = await Promise.all([
+          import('react-markdown'),
+          import('remark-gfm')
+        ]);
+        ReactMarkdownModule = rm.default || rm;
+        remarkGfmModule = rg.default || rg;
+        setLibsLoaded(true);
+      } catch (err) {
+        console.error("Failed to load rendering libraries:", err);
+      }
+    };
+
+    loadLibraries();
+
     async function fetchGuideData() {
       let currentMetadata = null;
 
@@ -54,13 +77,27 @@ const GuideDetail = () => {
 
         if (path.endsWith('.docx')) {
           setContentType('html');
-          fetch(url, { cache: 'no-cache' })
+          
+          // Check cache first
+          if (docxHtmlCache.has(url)) {
+            setContent(docxHtmlCache.get(url));
+            setLoading(false);
+            return;
+          }
+          
+          // Ensure mammoth is loaded
+          if (!mammothModule) {
+            const m = await import('mammoth');
+            mammothModule = m.default || m;
+          }
+
+          // REMOVED 'no-cache' to allow browser to use its own cache
+          fetch(url)
             .then(res => res.arrayBuffer())
             .then(arrayBuffer => {
-              return mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+              return mammothModule.convertToHtml({ arrayBuffer: arrayBuffer });
             })
             .then(result => {
-              // Use DOMParser to safely add target="_blank" and rel="noopener noreferrer" to links
               const parser = new DOMParser();
               const doc = parser.parseFromString(result.value, 'text/html');
               const links = doc.querySelectorAll('a');
@@ -69,7 +106,9 @@ const GuideDetail = () => {
                 link.setAttribute('rel', 'noopener noreferrer');
               });
               
-              setContent(doc.body.innerHTML);
+              const finalHtml = doc.body.innerHTML;
+              docxHtmlCache.set(url, finalHtml); // Store in cache
+              setContent(finalHtml);
               setLoading(false);
             })
             .catch(err => {
@@ -78,7 +117,18 @@ const GuideDetail = () => {
             });
         } else {
           setContentType('markdown');
-          fetch(url, { cache: 'no-cache' })
+          
+          // Ensure ReactMarkdown and remarkGfm are loaded
+          if (!ReactMarkdownModule || !remarkGfmModule) {
+            const [rm, rg] = await Promise.all([
+              import('react-markdown'),
+              import('remark-gfm')
+            ]);
+            ReactMarkdownModule = rm.default || rm;
+            remarkGfmModule = rg.default || rg;
+          }
+
+          fetch(url)
             .then(res => res.text())
             .then(text => {
               setContent(text);
@@ -121,6 +171,8 @@ const GuideDetail = () => {
       </div>
     );
   }
+
+  const MarkdownComponent = ReactMarkdownModule;
 
   return (
     <motion.div 
@@ -173,14 +225,21 @@ const GuideDetail = () => {
               {contentType === 'html' ? (
                 <div dangerouslySetInnerHTML={{ __html: content }} />
               ) : (
-                <ReactMarkdown 
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    a: (props) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-primary fw-bold" />
-                  }}
-                >
-                  {content}
-                </ReactMarkdown>
+                MarkdownComponent ? (
+                  <MarkdownComponent 
+                    remarkPlugins={[remarkGfmModule]}
+                    components={{
+                      a: (props) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-primary fw-bold" />
+                    }}
+                  >
+                    {content}
+                  </MarkdownComponent>
+                ) : (
+                  <div className="text-center py-5">
+                    <div className="spinner-border text-primary" role="status"></div>
+                    <p className="mt-2 text-muted">Loading renderer...</p>
+                  </div>
+                )
               )}
             </div>
           ) : (

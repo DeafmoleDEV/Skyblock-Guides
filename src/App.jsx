@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import GuideIndex from './pages/GuideIndex';
-import GuideDetail from './pages/GuideDetail';
-import LegalNotice from './pages/LegalNotice';
-import Creators from './pages/Creators';
 import { CategoriesProvider } from './lib/CategoriesContext';
+
+// Lazy load pages for better performance
+const Home = lazy(() => import('./pages/Home'));
+const GuideIndex = lazy(() => import('./pages/GuideIndex'));
+const GuideDetail = lazy(() => import('./pages/GuideDetail'));
+const LegalNotice = lazy(() => import('./pages/LegalNotice'));
+const Creators = lazy(() => import('./pages/Creators'));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="container py-5 text-center min-vh-50 d-flex align-items-center justify-content-center">
+    <div className="spinner-border text-primary" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </div>
+  </div>
+);
 
 function App() {
   return (
@@ -15,13 +26,15 @@ function App() {
         <div className="min-vh-100 d-flex flex-column">
           <Navbar />
           <main className="flex-grow-1">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/guides" element={<GuideIndex />} />
-              <Route path="/guides/:id" element={<GuideDetail />} />
-              <Route path="/creators" element={<Creators />} />
-              <Route path="/privacy" element={<LegalNotice />} />
-            </Routes>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/guides" element={<GuideIndex />} />
+                <Route path="/guides/:id" element={<GuideDetail />} />
+                <Route path="/creators" element={<Creators />} />
+                <Route path="/privacy" element={<LegalNotice />} />
+              </Routes>
+            </Suspense>
           </main>
           
           <footer className="py-5 px-4 border-top mt-5" style={{ borderColor: 'var(--ef-border)', backgroundColor: 'var(--ef-bg)' }}>

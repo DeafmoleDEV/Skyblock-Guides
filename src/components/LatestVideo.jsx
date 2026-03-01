@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Youtube, ExternalLink, Loader2 } from 'lucide-react';
+import { Youtube, ExternalLink, Loader2, Play } from 'lucide-react';
 import Card from './ui/Card';
 import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 
-const LatestVideo = () => {
+const LatestVideos = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -15,7 +15,6 @@ const LatestVideo = () => {
         setLoading(true);
         setError(false);
         
-        // Fetch channels from Supabase
         const { data: channels, error: supabaseError } = await supabase
           .from('latest_videos')
           .select('channel_id');
@@ -30,12 +29,14 @@ const LatestVideo = () => {
 
         const videoPromises = channels.map(async (channel) => {
           try {
+            // Using the public RSS feed - NO API KEY NEEDED!
             const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channel.channel_id}`;
             const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
             const res = await fetch(apiUrl);
             if (!res.ok) throw new Error('Network response was not ok');
             const data = await res.json();
             
+            // Grab the absolute latest upload (index 0)
             if (data.status === 'ok' && data.items && data.items.length > 0) {
               return { ...data.items[0], channel_id: channel.channel_id };
             }
@@ -48,9 +49,9 @@ const LatestVideo = () => {
 
         const fetchedVideos = (await Promise.all(videoPromises)).filter(v => v !== null);
         
-        // Optionally sort them by pubDate descending
+        // Sort newest to oldest
         fetchedVideos.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-
+        
         setVideos(fetchedVideos);
       } catch (err) {
         console.error('Error fetching latest videos:', err);
@@ -73,12 +74,7 @@ const LatestVideo = () => {
 
   if (error || videos.length === 0) {
     return (
-      <a 
-        href="https://www.youtube.com" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="text-decoration-none"
-      >
+      <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" className="text-decoration-none">
         <Card hoverable className="p-4 d-flex align-items-center justify-content-center gap-3 border-dashed border-secondary text-center">
           <Youtube className="text-danger" size={32} />
           <div>
@@ -94,10 +90,16 @@ const LatestVideo = () => {
   return (
     <div className="row g-4">
       {videos.map((video, index) => {
-        const videoId = video.link.split('v=')[1]?.split('&')[0];
-        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        // The standard watch link handles both long-form and Shorts automatically
+        const videoLink = video.link;
+        
+        // rss2json conveniently parses the thumbnail from the feed
+        // We add a fallback just in case the data is missing
+        const videoId = videoLink.split('v=')[1]?.split('&')[0];
+        const thumbnailUrl = video.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 
         return (
+          // Reverted to standard 3-column grid for horizontal thumbnails
           <div className="col-md-6 col-lg-4" key={video.guid || index}>
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -107,15 +109,34 @@ const LatestVideo = () => {
               className="h-100"
             >
               <Card className="overflow-hidden p-0 border-secondary bg-black h-100 d-flex flex-column">
-                <div className="ratio ratio-16x9">
-                  <iframe
-                    src={embedUrl}
-                    title={video.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    className="border-0"
-                  ></iframe>
-                </div>
+                
+                {/* 16:9 Aspect Ratio container for standard YouTube dimensions */}
+                <a 
+                  href={videoLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="d-block position-relative bg-dark"
+                  style={{ aspectRatio: '16/9', width: '100%', overflow: 'hidden' }}
+                >
+                  <img 
+                    src={thumbnailUrl} 
+                    alt={video.title} 
+                    className="w-100 h-100"
+                    style={{ objectFit: 'cover' }}
+                    loading="lazy"
+                  />
+                  
+                  {/* Play Button Overlay */}
+                  <div className="position-absolute top-50 start-50 translate-middle">
+                    <div 
+                      className="bg-black bg-opacity-75 rounded-circle d-flex align-items-center justify-content-center"
+                      style={{ width: '48px', height: '48px' }}
+                    >
+                      <Play className="text-white ms-1" size={24} fill="currentColor" />
+                    </div>
+                  </div>
+                </a>
+
                 <div className="p-3 bg-surface d-flex flex-column flex-grow-1">
                   <h4 className="h6 fw-bold text-white mb-2 line-clamp-2" title={video.title} style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                     {video.title}
@@ -125,7 +146,7 @@ const LatestVideo = () => {
                       PUBLISHED {new Date(video.pubDate).toLocaleDateString()}
                     </span>
                     <a 
-                      href={video.link} 
+                      href={videoLink} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-primary text-decoration-none d-flex align-items-center gap-1"
@@ -144,4 +165,4 @@ const LatestVideo = () => {
   );
 };
 
-export default LatestVideo;
+export default LatestVideos;
