@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import CanonicalTag from './components/CanonicalTag';
 import { CategoriesProvider } from './lib/CategoriesContext';
 
 // Lazy load pages for better performance
@@ -23,6 +24,7 @@ function App() {
   return (
     <CategoriesProvider>
       <Router basename={import.meta.env.BASE_URL}>
+        <CanonicalTag />
         <div className="min-vh-100 d-flex flex-column">
           <Navbar />
           <main className="flex-grow-1">
