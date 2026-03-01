@@ -48,15 +48,13 @@ const GuideDetail = () => {
       // 3. Fetch the actual content
       if (currentMetadata && (currentMetadata.contentPath || currentMetadata.content_path)) {
         const path = currentMetadata.content_path || currentMetadata.contentPath;
-        const separator = path.includes('?') ? '&' : '?';
-        const cacheBuster = `${separator}t=${new Date().getTime()}`;
         const url = path.startsWith('http') 
           ? path 
-          : `${import.meta.env.BASE_URL}${path}${cacheBuster}`;
+          : `${import.meta.env.BASE_URL}${path}`;
 
         if (path.endsWith('.docx')) {
           setContentType('html');
-          fetch(url)
+          fetch(url, { cache: 'no-cache' })
             .then(res => res.arrayBuffer())
             .then(arrayBuffer => {
               return mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
@@ -80,7 +78,7 @@ const GuideDetail = () => {
             });
         } else {
           setContentType('markdown');
-          fetch(url)
+          fetch(url, { cache: 'no-cache' })
             .then(res => res.text())
             .then(text => {
               setContent(text);
