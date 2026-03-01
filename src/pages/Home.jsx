@@ -62,9 +62,9 @@ const Home = () => {
 
       <div className="mt-5 pt-4">
         <div className="row justify-content-center">
-          <div className="col-md-8 col-lg-5">
+          <div className="col-12">
             <div className="text-center mb-4">
-              <h2 className="h4 fw-black text-white text-uppercase tracking-tighter">Latest Video</h2>
+              <h2 className="h4 fw-black text-white text-uppercase tracking-tighter">Latest Videos</h2>
               <div className="mx-auto bg-primary rounded" style={{ height: '3px', width: '40px' }}></div>
             </div>
             <LatestVideo />

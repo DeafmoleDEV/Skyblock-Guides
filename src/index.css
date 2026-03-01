@@ -25,6 +25,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .text-primary { color: var(--ef-primary) !important; }
+.bg-primary { background-color: var(--ef-primary) !important; }
 .text-light-muted { color: #aaaaaa !important; }
 .text-muted { color: var(--ef-text-muted) !important; }
 .bg-surface { background-color: var(--ef-surface) !important; }
