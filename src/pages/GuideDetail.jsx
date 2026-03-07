@@ -85,25 +85,66 @@ const GuideDetail = () => {
             return;
           }
           
-          // Ensure mammoth is loaded
+          // Ensure mammoth and jszip are loaded
           if (!mammothModule) {
-            const m = await import('mammoth');
+            const [m, j] = await Promise.all([
+              import('mammoth'),
+              import('jszip')
+            ]);
             mammothModule = m.default || m;
+            window.JSZip = j.default || j; // Store jszip globally or in a local variable
           }
+          const JSZip = window.JSZip;
 
-          // REMOVED 'no-cache' to allow browser to use its own cache
           fetch(url)
             .then(res => res.arrayBuffer())
-            .then(arrayBuffer => {
-              return mammothModule.convertToHtml({ arrayBuffer: arrayBuffer });
+            .then(async (arrayBuffer) => {
+              try {
+                // Pre-process the docx to inject color markers because mammoth ignores colors
+                const zip = await JSZip.loadAsync(arrayBuffer);
+                const docXmlText = await zip.file("word/document.xml").async("text");
+                
+                // Use regex instead of DOMParser for XML to avoid namespace issues across browsers
+                let modifiedDocXml = docXmlText.replace(/<w:r[>\s][\s\S]*?<\/w:r>/g, (match) => {
+                  let colorMatch = match.match(/<w:color[^>]*w:val="([^"]+)"/);
+                  if (colorMatch) {
+                    let hexColor = colorMatch[1].toLowerCase();
+                    if (hexColor === "000000" || hexColor === "auto") hexColor = "bbbbbb";
+                    else if (hexColor === "ffffff") hexColor = "ffffff"; 
+                    // Map common Word hyperlink blues (including #1155cc) to the theme green (#55ff55)
+                    else if (hexColor === "0563c1" || hexColor === "0000ff" || hexColor === "1155cc") hexColor = "55ff55";
+
+                    // Wrap the text content of each <w:t> with our markers
+                    return match.replace(/(<w:t[^>]*>)([\s\S]*?)(<\/w:t>)/g, (tMatch, tStart, tContent, tEnd) => {
+                      return `${tStart}|||COL:${hexColor}|||${tContent}|||/COL|||${tEnd}`;
+                    });
+                  }
+                  return match;
+                });
+                
+                zip.file("word/document.xml", modifiedDocXml);
+                const modifiedArrayBuffer = await zip.generateAsync({ type: "arraybuffer" });
+                
+                return mammothModule.convertToHtml({ arrayBuffer: modifiedArrayBuffer });
+              } catch (err) {
+                console.error("Marker injection failed, falling back to original doc:", err);
+                return mammothModule.convertToHtml({ arrayBuffer: arrayBuffer });
+              }
             })
             .then(result => {
+              let htmlString = result.value;
+              // Replace markers with spans
+              htmlString = htmlString.replace(/\|\|\|COL:([0-9a-fA-F]{3,6})\|\|\|/g, '<span style="color: #$1;">');
+              htmlString = htmlString.replace(/\|\|\|\/COL\|\|\|/g, '</span>');
+
               const parser = new DOMParser();
-              const doc = parser.parseFromString(result.value, 'text/html');
+              const doc = parser.parseFromString(htmlString, 'text/html');
               const links = doc.querySelectorAll('a');
               links.forEach(link => {
                 link.setAttribute('target', '_blank');
                 link.setAttribute('rel', 'noopener noreferrer');
+                link.style.color = 'var(--ef-primary)';
+                link.classList.add('fw-bold');
               });
               
               const finalHtml = doc.body.innerHTML;
