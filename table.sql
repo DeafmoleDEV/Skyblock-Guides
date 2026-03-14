@@ -25,7 +25,7 @@ begin
   end if;
 end $$;
 
--- Optional: Insert a test channel (e.g., Elite Farmer)
+-- Optional: Insert a test channel (e.g., PaperZealot)
 insert into latest_videos (channel_id, channel_name)
-values ('UC17QRjzQlQc-VPxr7Ry-RLA', 'Elite Farmer')
+values ('UC17QRjzQlQc-VPxr7Ry-RLA', 'PaperZealot')
 on conflict (channel_id) do nothing;

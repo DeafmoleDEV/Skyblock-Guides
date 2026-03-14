@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Users, AlertTriangle, ExternalLink, Video, MessageSquare } from 'lucide-react';
+import { Users, AlertTriangle, ExternalLink, Video, MessageSquare, Youtube } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import Card from '../components/ui/Card';
 
@@ -30,18 +30,20 @@ const CreatorCard = ({ creator, delay = 0 }) => {
         
         <div className="d-flex flex-column gap-2 mb-3">
           {creator.youtube_id && (
-            <div 
-              className="youtube-subscribe p-3 rounded-3 d-flex justify-content-center align-items-center" 
-              style={{ backgroundColor: '#333', border: '1px solid var(--ef-border)', minHeight: '68px' }}
+            <a 
+              href={`https://www.youtube.com/channel/${creator.youtube_id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="platform-link p-3 rounded-3 d-flex align-items-center gap-3 text-decoration-none"
+              style={{ backgroundColor: '#333', border: '1px solid var(--ef-border)', color: '#fff' }}
             >
-              <div 
-                className="g-ytsubscribe" 
-                data-channelid={creator.youtube_id}
-                data-layout="full" 
-                data-count="default"
-                data-theme="dark"
-              ></div>
-            </div>
+              <Youtube size={20} className="text-danger" />
+              <div className="flex-grow-1">
+                <div className="small fw-bold">YouTube</div>
+                <div className="text-muted extra-small">@{creator.youtube_handle || creator.name.toLowerCase().replace(/\s+/g, '')}</div>
+              </div>
+              <ExternalLink size={14} className="opacity-50" />
+            </a>
           )}
 
           {creator.tiktok_username && (
@@ -112,19 +114,6 @@ const Creators = () => {
 
     fetchCreators();
   }, []);
-
-  useEffect(() => {
-    if (!loading && creators.length > 0) {
-      const renderWidgets = () => {
-        if (window.gapi && window.gapi.ytsubscribe) {
-          window.gapi.ytsubscribe.go();
-        } else {
-          setTimeout(renderWidgets, 500);
-        }
-      };
-      renderWidgets();
-    }
-  }, [loading, creators]);
 
   return (
     <div className="container py-5">
