@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, User, Clock } from 'lucide-react';
@@ -20,7 +20,6 @@ const GuideDetail = () => {
   const [content, setContent] = useState('');
   const [contentType, setContentType] = useState('markdown'); // 'markdown' or 'html'
   const [loading, setLoading] = useState(true);
-  const [libsLoaded, setLibsLoaded] = useState(false);
 
   useEffect(() => {
     // ... loadLibraries ...
@@ -32,7 +31,6 @@ const GuideDetail = () => {
         ]);
         ReactMarkdownModule = rm.default || rm;
         remarkGfmModule = rg.default || rg;
-        setLibsLoaded(true);
       } catch (err) {
         console.error("Failed to load rendering libraries:", err);
       }
@@ -85,20 +83,21 @@ const GuideDetail = () => {
             return;
           }
           
-          // Ensure mammoth and jszip are loaded
-          if (!mammothModule) {
-            const [m, j] = await Promise.all([
-              import('mammoth'),
-              import('jszip')
-            ]);
-            mammothModule = m.default || m;
-            window.JSZip = j.default || j; // Store jszip globally or in a local variable
-          }
-          const JSZip = window.JSZip;
+          // Start fetching the document IMMEDIATELY to avoid waiting for large parsing libraries
+          const fetchPromise = fetch(url).then(res => res.arrayBuffer());
 
-          fetch(url)
-            .then(res => res.arrayBuffer())
-            .then(async (arrayBuffer) => {
+          // Start loading mammoth and jszip concurrently
+          const importPromise = !mammothModule ? Promise.all([
+            import('mammoth'),
+            import('jszip')
+          ]).then(([m, j]) => {
+            mammothModule = m.default || m;
+            window.JSZip = j.default || j;
+          }) : Promise.resolve();
+
+          Promise.all([fetchPromise, importPromise])
+            .then(async ([arrayBuffer]) => {
+              const JSZip = window.JSZip;
               try {
                 // Pre-process the docx to inject color markers because mammoth ignores colors
                 const zip = await JSZip.loadAsync(arrayBuffer);
@@ -159,19 +158,20 @@ const GuideDetail = () => {
         } else {
           setContentType('markdown');
           
-          // Ensure ReactMarkdown and remarkGfm are loaded
-          if (!ReactMarkdownModule || !remarkGfmModule) {
-            const [rm, rg] = await Promise.all([
-              import('react-markdown'),
-              import('remark-gfm')
-            ]);
+          // Start fetching the document IMMEDIATELY
+          const fetchPromise = fetch(url).then(res => res.text());
+
+          // Start loading ReactMarkdown and remarkGfm concurrently (if not already loading/loaded)
+          const importPromise = (!ReactMarkdownModule || !remarkGfmModule) ? Promise.all([
+            import('react-markdown'),
+            import('remark-gfm')
+          ]).then(([rm, rg]) => {
             ReactMarkdownModule = rm.default || rm;
             remarkGfmModule = rg.default || rg;
-          }
+          }) : Promise.resolve();
 
-          fetch(url)
-            .then(res => res.text())
-            .then(text => {
+          Promise.all([fetchPromise, importPromise])
+            .then(([text]) => {
               setContent(text);
               setLoading(false);
             })
