@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Users, AlertTriangle, ExternalLink, Video, MessageSquare, Youtube } from 'lucide-react';
+import { Users, AlertTriangle, ExternalLink, Video, MessageSquare, Youtube, Globe } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import Card from '../components/ui/Card';
 
@@ -75,6 +75,23 @@ const CreatorCard = ({ creator, delay = 0 }) => {
               <div className="flex-grow-1">
                 <div className="small fw-bold">Hypixel Forums</div>
                 <div className="text-muted extra-small">View Profile</div>
+              </div>
+              <ExternalLink size={14} className="opacity-50" />
+            </a>
+          )}
+
+          {creator.custom_url && (
+            <a 
+              href={creator.custom_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="platform-link p-3 rounded-3 d-flex align-items-center gap-3 text-decoration-none"
+              style={{ backgroundColor: '#333', border: '1px solid var(--ef-border)', color: '#fff' }}
+            >
+              <Globe size={20} className="text-info" />
+              <div className="flex-grow-1">
+                <div className="small fw-bold">{creator.custom_title || 'Website'}</div>
+                <div className="text-muted extra-small">Visit Link</div>
               </div>
               <ExternalLink size={14} className="opacity-50" />
             </a>

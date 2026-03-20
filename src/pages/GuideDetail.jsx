@@ -109,7 +109,7 @@ const GuideDetail = () => {
                   let colorMatch = match.match(/<w:color[^>]*w:val="([^"]+)"/);
                   if (colorMatch) {
                     let hexColor = colorMatch[1].toLowerCase();
-                    if (hexColor === "000000" || hexColor === "auto") hexColor = "bbbbbb";
+                    if (hexColor === "000000" || hexColor === "auto" || hexColor === "0c0b08") hexColor = "bbbbbb";
                     else if (hexColor === "ffffff") hexColor = "ffffff"; 
                     // Map common Word hyperlink blues (including #1155cc) to the theme green (#55ff55)
                     else if (hexColor === "0563c1" || hexColor === "0000ff" || hexColor === "1155cc") hexColor = "55ff55";
@@ -227,7 +227,7 @@ const GuideDetail = () => {
         <ArrowLeft size={14} /> Back to Library
       </Link>
 
-      <article>
+      <article className="bg-surface p-4 p-md-5 rounded-4 border shadow-sm" style={{ borderColor: 'var(--ef-border)' }}>
         <header className="mb-5">
           <div className="mb-4">
             <span className="badge-custom">

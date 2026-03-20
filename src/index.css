@@ -264,3 +264,22 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--ef-border);
   display: block;
 }
+
+.prose-custom table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+}
+
+.prose-custom th, .prose-custom td {
+  border: 1px solid var(--ef-border);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  color: #bbbbbb;
+}
+
+.prose-custom th {
+  background-color: rgba(255, 255, 255, 0.03);
+  font-weight: 700;
+  color: var(--ef-secondary);
+}
