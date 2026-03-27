@@ -4,13 +4,13 @@ import { ArrowRight } from 'lucide-react';
 import Card from './ui/Card';
 
 const GuideCard = ({ guide, delay = 0 }) => {
-  // Prefetch libraries when user hovers over a card
+  
   const handlePrefetch = () => {
-    // These are dynamic imports that browser will fetch and cache
+    
     import('react-markdown');
     import('remark-gfm');
     
-    // If it's a docx, prefetch mammoth too
+    
     const path = guide.content_path || guide.contentPath;
     if (path && path.endsWith('.docx')) {
       import('mammoth');

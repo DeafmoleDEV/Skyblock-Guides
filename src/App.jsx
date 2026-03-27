@@ -4,14 +4,14 @@ import Navbar from './components/Navbar';
 import CanonicalTag from './components/CanonicalTag';
 import { CategoriesProvider } from './lib/CategoriesContext';
 
-// Lazy load pages for better performance
+
 const Home = lazy(() => import('./pages/Home'));
 const GuideIndex = lazy(() => import('./pages/GuideIndex'));
 const GuideDetail = lazy(() => import('./pages/GuideDetail'));
 const LegalNotice = lazy(() => import('./pages/LegalNotice'));
 const Creators = lazy(() => import('./pages/Creators'));
 
-// Loading fallback component
+
 const PageLoader = () => (
   <div className="container py-5 text-center min-vh-50 d-flex align-items-center justify-content-center">
     <div className="spinner-border text-primary" role="status">

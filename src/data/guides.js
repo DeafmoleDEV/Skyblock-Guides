@@ -1,4 +1,4 @@
-// Registry of all guides
+
 export const categories = [
   "Dungeons",
   "Slayers",
@@ -13,7 +13,7 @@ const guidesRegistry = [
     author: 'lotrszefOP',
     date: 'Jan 26, 2026',
     category: 'Dungeons',
-    contentPath: 'data/guides/f7-gear-guide.docx', // Now using .docx
+    contentPath: 'data/guides/f7-gear-guide.docx', 
     tags: ['F7', 'Archer', 'Berserker']
   },
   {
@@ -23,7 +23,7 @@ const guidesRegistry = [
     author: 'SlayerKing',
     date: 'Feb 01, 2026',
     category: 'Slayers',
-    contentPath: null, // Placeholder
+    contentPath: null, 
     tags: ['Slayers', 'Zombie']
   },
   {
@@ -33,7 +33,7 @@ const guidesRegistry = [
     author: 'GoldDigger',
     date: 'Jan 15, 2026',
     category: 'Mining',
-    contentPath: null, // Placeholder
+    contentPath: null, 
     tags: ['Mining', 'HOTM']
   }
 ];

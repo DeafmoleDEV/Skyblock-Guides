@@ -29,14 +29,14 @@ const LatestVideos = () => {
 
         const videoPromises = channels.map(async (channel) => {
           try {
-            // Using the public RSS feed - NO API KEY NEEDED!
+            
             const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channel.channel_id}`;
             const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
             const res = await fetch(apiUrl);
             if (!res.ok) throw new Error('Network response was not ok');
             const data = await res.json();
             
-            // Grab the absolute latest upload (index 0)
+            
             if (data.status === 'ok' && data.items && data.items.length > 0) {
               return { ...data.items[0], channel_id: channel.channel_id };
             }
@@ -49,7 +49,7 @@ const LatestVideos = () => {
 
         const fetchedVideos = (await Promise.all(videoPromises)).filter(v => v !== null);
         
-        // Sort newest to oldest
+        
         fetchedVideos.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
         
         setVideos(fetchedVideos);
@@ -90,16 +90,16 @@ const LatestVideos = () => {
   return (
     <div className="row g-4">
       {videos.map((video, index) => {
-        // The standard watch link handles both long-form and Shorts automatically
+        
         const videoLink = video.link;
         
-        // rss2json conveniently parses the thumbnail from the feed
-        // We add a fallback just in case the data is missing
+        
+        
         const videoId = videoLink.split('v=')[1]?.split('&')[0];
         const thumbnailUrl = video.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 
         return (
-          // Reverted to standard 3-column grid for horizontal thumbnails
+          
           <div className="col-md-6 col-lg-4" key={video.guid || index}>
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -110,7 +110,7 @@ const LatestVideos = () => {
             >
               <Card className="overflow-hidden p-0 border-secondary bg-black h-100 d-flex flex-column">
                 
-                {/* 16:9 Aspect Ratio container for standard YouTube dimensions */}
+                {}
                 <a 
                   href={videoLink}
                   target="_blank"
@@ -126,7 +126,7 @@ const LatestVideos = () => {
                     loading="lazy"
                   />
                   
-                  {/* Play Button Overlay */}
+                  {}
                   <div className="position-absolute top-50 start-50 translate-middle">
                     <div 
                       className="bg-black bg-opacity-75 rounded-circle d-flex align-items-center justify-content-center"

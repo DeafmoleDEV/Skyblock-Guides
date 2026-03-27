@@ -5,7 +5,7 @@ import { categories as fallbackCategories } from '../data/guides';
 const CategoriesContext = createContext();
 
 export const CategoriesProvider = ({ children }) => {
-  // Initialize with fallback or localStorage
+  
   const [categories, setCategories] = useState(() => {
     const saved = localStorage.getItem('sb_categories');
     return saved ? JSON.parse(saved) : fallbackCategories;

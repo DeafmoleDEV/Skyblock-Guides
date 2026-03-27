@@ -6,23 +6,23 @@ import localGuides from '../data/guides';
 import { supabase } from '../lib/supabase';
 import Button from '../components/ui/Button';
 
-// Heavy libraries will be loaded dynamically
+
 let mammothModule = null;
 let ReactMarkdownModule = null;
 let remarkGfmModule = null;
 
-// Persistent cache to avoid re-converting the same file in a single session
+
 const docxHtmlCache = new Map();
 
 const GuideDetail = () => {
   const { id } = useParams();
   const [guideMetadata, setGuideMetadata] = useState(null);
   const [content, setContent] = useState('');
-  const [contentType, setContentType] = useState('markdown'); // 'markdown' or 'html'
+  const [contentType, setContentType] = useState('markdown'); 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // ... loadLibraries ...
+    
     const loadLibraries = async () => {
       try {
         const [rm, rg] = await Promise.all([
@@ -41,7 +41,7 @@ const GuideDetail = () => {
     async function fetchGuideData() {
       let currentMetadata = null;
 
-      // 1. Try fetching from Supabase FIRST (Priority)
+      
       try {
         const { data } = await supabase
           .from('guides')
@@ -57,7 +57,7 @@ const GuideDetail = () => {
         console.log("Supabase fetch failed or not configured, checking local data...");
       }
 
-      // 2. Fallback to local data if Supabase didn't have it
+      
       if (!currentMetadata) {
         const local = localGuides.find(g => g.id === id);
         if (local) {
@@ -66,7 +66,7 @@ const GuideDetail = () => {
         }
       }
 
-      // 3. Fetch the actual content
+      
       if (currentMetadata && (currentMetadata.contentPath || currentMetadata.content_path)) {
         const path = currentMetadata.content_path || currentMetadata.contentPath;
         const url = path.startsWith('http') 
@@ -76,17 +76,17 @@ const GuideDetail = () => {
         if (path.endsWith('.docx')) {
           setContentType('html');
           
-          // Check cache first
+          
           if (docxHtmlCache.has(url)) {
             setContent(docxHtmlCache.get(url));
             setLoading(false);
             return;
           }
           
-          // Start fetching the document IMMEDIATELY to avoid waiting for large parsing libraries
+          
           const fetchPromise = fetch(url).then(res => res.arrayBuffer());
 
-          // Start loading mammoth and jszip concurrently
+          
           const importPromise = !mammothModule ? Promise.all([
             import('mammoth'),
             import('jszip')
@@ -99,11 +99,11 @@ const GuideDetail = () => {
             .then(async ([arrayBuffer]) => {
               const JSZip = window.JSZip;
               try {
-                // Pre-process the docx to inject color markers because mammoth ignores colors
+                
                 const zip = await JSZip.loadAsync(arrayBuffer);
                 const docXmlText = await zip.file("word/document.xml").async("text");
                 
-                // Use regex instead of DOMParser for XML to avoid namespace issues across browsers
+                
                 let modifiedDocXml = docXmlText.replace(/<w:r[>\s][\s\S]*?<\/w:r>/g, (match) => {
                   let colorMatch = match.match(/<w:color[^>]*w:val="([^"]+)"/);
                   if (colorMatch) {

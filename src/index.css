@@ -3,7 +3,7 @@
 :root {
   --ef-bg: #0c0c0c;
   --ef-surface: #141414;
-  --ef-primary: #55ff55; /* Elite Farmer Green */
+  --ef-primary: #55ff55; 
   --ef-secondary: #ffffff;
   --ef-border: #222222;
   --ef-text-muted: #888888;
@@ -51,7 +51,7 @@ h1, h2, h3, h4, h5, h6 {
   background-color: rgba(85, 255, 85, 0.05);
 }
 
-/* Grid & Layout Refinement */
+
 .container {
   max-width: 1200px;
   padding-left: 1.5rem;
@@ -63,7 +63,7 @@ h1, h2, h3, h4, h5, h6 {
   padding-bottom: 80px;
 }
 
-/* Elite Component Styles */
+
 .btn-primary {
   background-color: var(--ef-primary);
   border: none;
@@ -155,7 +155,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.7rem;
 }
 
-/* Helper Classes */
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -171,7 +171,7 @@ h1, h2, h3, h4, h5, h6 {
   transform: translate(-50%, -50%) scale(1.1) !important;
 }
 
-/* Navbar */
+
 .navbar-custom {
   background-color: rgba(12, 12, 12, 0.9);
   border-bottom: 1px solid var(--ef-border);
@@ -179,7 +179,7 @@ h1, h2, h3, h4, h5, h6 {
   backdrop-filter: blur(12px);
 }
 
-/* Prose for content */
+
 .prose-custom {
   color: var(--ef-secondary);
 }

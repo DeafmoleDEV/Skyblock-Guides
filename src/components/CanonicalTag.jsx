@@ -6,7 +6,7 @@ const CanonicalTag = () => {
 
   useEffect(() => {
     const baseUrl = 'https://skyblock-guides.com';
-    // Remove trailing slash if any, unless it's just '/'
+    
     let path = location.pathname;
     if (path.length > 1 && path.endsWith('/')) {
       path = path.slice(0, -1);
